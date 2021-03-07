@@ -672,15 +672,12 @@ class Camera implements CameraCaptureCallback.CameraCaptureStateListener {
         CaptureRequest.CONTROL_AF_TRIGGER, CaptureRequest.CONTROL_AF_TRIGGER_START);
 
     try {
-      captureSession.capture(
-          mPreviewRequestBuilder.build(),
-          null,
-          mBackgroundHandler);
-  } catch (CameraAccessException e) {
-    Log.i(TAG, "Error unlocking focus: " + e.getMessage());
-    dartMessenger.sendCameraErrorEvent(e.getMessage());
-    return;
-  }
+      captureSession.capture(mPreviewRequestBuilder.build(), null, mBackgroundHandler);
+    } catch (CameraAccessException e) {
+      Log.i(TAG, "Error unlocking focus: " + e.getMessage());
+      dartMessenger.sendCameraErrorEvent(e.getMessage());
+      return;
+    }
   }
 
   /** Cancel and reset auto focus state and refresh the preview session. */
@@ -900,8 +897,8 @@ class Camera implements CameraCaptureCallback.CameraCaptureStateListener {
     cameraFeatures.get(CameraFeatures.autoFocus).updateBuilder(mPreviewRequestBuilder);
 
     /**
-     * For focus mode we need to do an extra step of actually locking/unlocking the
-     * focus in order to ensure it goes into the correct state.
+     * For focus mode we need to do an extra step of actually locking/unlocking the focus in order
+     * to ensure it goes into the correct state.
      */
     switch (newMode) {
       case locked:
@@ -910,11 +907,11 @@ class Camera implements CameraCaptureCallback.CameraCaptureStateListener {
 
         // Set AF state to idle again
         mPreviewRequestBuilder.set(
-                CaptureRequest.CONTROL_AF_TRIGGER, CameraMetadata.CONTROL_AF_TRIGGER_IDLE);
+            CaptureRequest.CONTROL_AF_TRIGGER, CameraMetadata.CONTROL_AF_TRIGGER_IDLE);
 
         try {
           captureSession.setRepeatingRequest(
-                  mPreviewRequestBuilder.build(), null, mBackgroundHandler);
+              mPreviewRequestBuilder.build(), null, mBackgroundHandler);
         } catch (CameraAccessException e) {
           result.error("setFocusModeFailed", "Error setting focus mode: " + e.getMessage(), null);
         }
